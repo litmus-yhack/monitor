@@ -1,6 +1,11 @@
 # Litmus: monitor
 Analyses IEEE802.11 probe request frames to approximate attendance
 
+## Installing dependencies
+
+This project is written in Python 3 and depends on the following:
+* `requests`
+
 ## Running monitor on macOS
 
 1. Use the Airport CLI, found at `/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport`

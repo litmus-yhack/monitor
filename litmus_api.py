@@ -22,17 +22,7 @@ def put_data(people, loudness):
         endpoint = API_ENDPOINT + "/sniffer/put_data/" + API_KEY
         data = {"people" : people, "loudness" : loudness}
         r = requests.post(url = endpoint, data = data)
+        return True
     else:
-        print("ERROR: not connected")
-        return None
-
-def disconnect():
-    endpoint = API_ENDPOINT + "/client/disconnect/" + API_KEY
-    r = requests.post(url = endpoint, data = {})
-    return r
-
-def connect():
-    endpoint = API_ENDPOINT + "/client/connect/" + API_KEY
-    r = requests.post(url = endpoint, data = {})
-    return r
+        return False
 

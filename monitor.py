@@ -4,6 +4,9 @@ import os
 import sys
 import subprocess
 import time
+import argparse
+
+import litmus_api as API
 
 TMPDIR = os.path.dirname("tmp/")
 
@@ -35,6 +38,11 @@ def get_ssid():
 
 def reconnect_ap(interface, ssid):
     subprocess.run(connect_cmd_fmt.format(interface,ssid).split()) # connect back to the AP (assume no PSK...)
+    res = subprocess.run(["curl", "www.example.com"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if res.returncode != 0:
+        sys.stderr.write("Something went wrong reconnecting your AP...")
+        return False
+    return True
 
 def capture_channel(interface, chan):
     subprocess.run(channel_cmd_fmt.format(chan).split()) # switch channel
@@ -73,6 +81,11 @@ def capture_channel(interface, chan):
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser(description="Analyses IEEE802.11 probe request frames to approximate attendance")
+    parser.add_argument("--interactive", default=False, action="store_true")
+
+    args = parser.parse_args()
+
     IFACE = "en0"
 
     # must be running as root
@@ -105,17 +118,28 @@ if __name__ == "__main__":
 
             sys.stdout.write("\n")
 
-            print("{} WiFi devices detected".format(len(all_macs.keys()), channel))
+            N = len(all_macs.keys())
+            print("{} WiFi devices detected".format(N, channel))
 
-            reconnect_ap(IFACE, ssid)
-            subprocess.run(["curl", "www.example.com"])
-            input()
+            if not reconnect_ap(IFACE, ssid):
+                break # couldn't reconnect
+
+            if args.interactive:
+                print("Press enter to put data to cloud")
+                input()
+
+            if not API.put_data(N, 0):
+                print("Session ended.")
+                break # stop when session is ended
+
+            if args.interactive:
+                print("Press enter again to continue scanning.")
+                input()
 
     except KeyboardInterrupt:
         if not get_ssid():
             print("Restoring AP...")
             reconnect_ap(IFACE, ssid)
-
         print("Done.")
 
     # cleanup:

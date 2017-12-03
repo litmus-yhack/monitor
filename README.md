@@ -25,9 +25,9 @@ to managed mode on an AP, and push a data update to the Litmus API server.
 
 ## Sources:
 
-[Linux kernel iw documentation](https://wireless.wiki.kernel.org/en/users/documentation/iw#listening_to_events)
-[802.11 Network Structures](https://sarwiki.informatik.hu-berlin.de/802.11_Network_Structures#Probe_Request_Frame)
-[Wireshark: Monitor mode on OS X](https://wiki.wireshark.org/CaptureSetup/WLAN#Mac_OS_X)
+* [Linux kernel iw documentation](https://wireless.wiki.kernel.org/en/users/documentation/iw#listening_to_events)
+* [802.11 Network Structures](https://sarwiki.informatik.hu-berlin.de/802.11_Network_Structures#Probe_Request_Frame)
+* [Wireshark: Monitor mode on OS X](https://wiki.wireshark.org/CaptureSetup/WLAN#Mac_OS_X)
 
 A related project: [schollz/find-lf](https://github.com/schollz/find-lf)
 

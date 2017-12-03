@@ -101,40 +101,46 @@ if __name__ == "__main__":
 
     try:
         while True:
-            subprocess.run(link_down_cmd.split()) # bring the link down for monitor mode
+            if API.check_state():
+                subprocess.run(link_down_cmd.split()) # bring the link down for monitor mode
 
-            t = time.time()
-            all_macs = {}
-            for i,channel in enumerate(IEEE80211_CHANNELS):
-                if time.time() - t > TIMEOUT:
-                    break
+                t = time.time()
+                all_macs = {}
+                for i,channel in enumerate(IEEE80211_CHANNELS):
+                    if time.time() - t > TIMEOUT:
+                        break
 
-                mac_hash = capture_channel(IFACE, channel)
-                for k in mac_hash.keys():
-                    all_macs[k] = 1
+                    mac_hash = capture_channel(IFACE, channel)
+                    for k in mac_hash.keys():
+                        all_macs[k] = 1
 
-                sys.stdout.write(".")
-                sys.stdout.flush()
+                    sys.stdout.write(".")
+                    sys.stdout.flush()
 
-            sys.stdout.write("\n")
+                sys.stdout.write("\n")
 
-            N = len(all_macs.keys())
-            print("{} WiFi devices detected".format(N, channel))
+                N = len(all_macs.keys())
+                print("{} WiFi devices detected".format(N, channel))
 
-            if not reconnect_ap(IFACE, ssid):
-                break # couldn't reconnect
+                if not reconnect_ap(IFACE, ssid):
+                    break # couldn't reconnect
 
-            if args.interactive:
-                print("Press enter to put data to cloud")
-                input()
+                if args.interactive:
+                    print("Press enter to put data to cloud")
+                    input()
 
-            if not API.put_data(N, 0):
-                print("Session ended.")
-                break # stop when session is ended
+                if not API.put_data(N, 0):
+                    print("Session ended.")
 
-            if args.interactive:
-                print("Press enter again to continue scanning.")
-                input()
+                if args.interactive:
+                    print("Press enter again to continue scanning.")
+                    input()
+            else:
+                print("Waiting to transmit...")
+                t = time.time()
+                while time.time() - t < 5:
+                    pass
+
 
     except KeyboardInterrupt:
         if not get_ssid():

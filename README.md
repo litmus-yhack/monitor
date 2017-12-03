@@ -8,6 +8,8 @@ Analyses IEEE802.11 probe request frames to approximate attendance
 3. Capture link-level 802.11 frames with `airport en0 sniff` (where `en0` is most likely your wireless interface - check with `ifconfig`)
 4. Analyse captured binary frames for Probe Request packets using `tcpdump -s 24 -e -r /tmp/airportSniffxxxxx.cap type mgt subtype probe-req`
 
+Alternately, once dissociated from an AP, run `tcpdump -s 256 -e -p -Ini en0 type mgt subtype probe-req` and it will dump captured frames to stdout.
+
 ## Running monitor on Linux
 
 It's important to first confirm both the physical device layer and driver support monitor mode (specifically capturing management probe request frames).

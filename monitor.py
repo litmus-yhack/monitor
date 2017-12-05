@@ -37,12 +37,14 @@ def get_ssid():
             return v
 
 def reconnect_ap(interface, ssid):
-    subprocess.run(connect_cmd_fmt.format(interface,ssid).split()) # connect back to the AP (assume no PSK...)
-    res = subprocess.run(["curl", "www.example.com"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    if res.returncode != 0:
-        sys.stderr.write("Something went wrong reconnecting your AP...")
-        return False
-    return True
+    if ssid:
+        subprocess.run(connect_cmd_fmt.format(interface,ssid).split()) # connect back to the AP (assume no PSK...)
+        res = subprocess.run(["curl", "www.example.com"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if res.returncode == 0:
+            return False
+
+    sys.stderr.write("Something went wrong reconnecting your AP...")
+    return False
 
 def capture_channel(interface, chan):
     subprocess.run(channel_cmd_fmt.format(chan).split()) # switch channel
